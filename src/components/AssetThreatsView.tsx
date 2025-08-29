@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -186,11 +187,10 @@ export const AssetThreatsView: React.FC<AssetThreatsViewProps> = ({ assetId, onB
                       <TableHead>Severity</TableHead>
                       <TableHead>Alert Name</TableHead>
                       <TableHead>Label</TableHead>
-                      <TableHead>Process</TableHead>
-                      <TableHead>User</TableHead>
-                      <TableHead>Source IP</TableHead>
-                      <TableHead>Protocol</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Host Info</TableHead>
+                      <TableHead>Process</TableHead>
+                      <TableHead>Network</TableHead>
                       <TableHead>Comments</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -218,18 +218,6 @@ export const AssetThreatsView: React.FC<AssetThreatsViewProps> = ({ assetId, onB
                             {getLabelText(threat.label)}
                           </Badge>
                         </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {threat.process_name || 'N/A'}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {threat.user_name || 'N/A'}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {threat.source_ip || 'N/A'}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {threat.protocol || 'N/A'}
-                        </TableCell>
                         <TableCell>
                           <Badge 
                             variant="outline"
@@ -241,6 +229,26 @@ export const AssetThreatsView: React.FC<AssetThreatsViewProps> = ({ assetId, onB
                           >
                             {threat.status || 'Unknown'}
                           </Badge>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          <div className="space-y-1">
+                            <div>{threat.host_name || 'Unknown Host'}</div>
+                            <div className="text-muted-foreground">{threat.host_ip}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          <div className="space-y-1">
+                            <div>{threat.process_name || 'N/A'}</div>
+                            {threat.user_name && (
+                              <div className="text-muted-foreground">User: {threat.user_name}</div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          {threat.source_ip && (
+                            <div>{threat.source_ip}:{threat.source_port || 'N/A'}</div>
+                          )}
+                          {threat.protocol && <div className="text-muted-foreground">{threat.protocol}</div>}
                         </TableCell>
                         <TableCell className="max-w-[200px] truncate">
                           {threat.comments || 'No comments'}
